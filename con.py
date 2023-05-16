@@ -35,9 +35,6 @@ class Connection:
                 #commit changes
                 connection.commit()
                 #close cursor
-                cursor.close()
-                #close connection
-                connection.close()
                 #fetch data
                 record = cursor.fetchall()
             return connection
@@ -61,6 +58,21 @@ class Connection:
         except Exception as e:
             print(e)
             return None
-
-connections = Connection("face_recon", "mav", "21void", "localhost", "5432")
-conn = connections.connect()
+    
+    def checkUser(self, id):
+        try:
+            connection = pg.connect(dbname=self.dbname, user=self.user, password=self.password, host=self.host, port=self.port)
+            if connection:
+                print("Connection to database successful!")
+                #get cursor
+                cursor = connection.cursor()
+                #execute query
+                cursor.execute("SELECT date FROM accounts WHERE emp_id = '%s'", (id,))
+                #commit changes
+                connection.commit()
+                #fetch data
+                record = cursor.fetchall()
+            return record
+        except Exception as e:
+            print(e)
+            return None
